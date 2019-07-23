@@ -1,33 +1,24 @@
-import { server } from 'websocket'
+import { server as WebSocketServer } from 'websocket'
 import http from 'http'
 import colour from './consoleColours'
 
-const stdin = process.openStdin();
+const stdin = process.openStdin()
 
 const httpServer = http.createServer((req, res) => {
-  console.log((new Date) + ' Received request for ' + req.url)
+  console.log(colour('bold') + (new Date()) + colour('reset') + ' Received request for ' + req.url)
 
-  if (req.method != 'POST') {
-    res.writeHead(404)
-    res.end()
-    return
-  }
-
-
+  res.writeHead(404)
+  res.end()
 })
 
 httpServer.listen(8081, () => {
   console.log(colour('bold') + (new Date()) + colour('reset') + ' Server is listening on port ' + colour('underlined') + '8081' + colour('reset'))
 })
 
-const wsServer = new server({
+const wsServer = new WebSocketServer({
   httpServer: httpServer,
   autoAcceptConnections: true
 })
-
-function originIsAllowed(origin) {
-  return true;
-}
 
 wsServer.on('connect', connection => {
   console.log(colour('bold') + (new Date()) + colour('reset') + colour('f_green') + ' Connection accepted.' + colour('reset'))
